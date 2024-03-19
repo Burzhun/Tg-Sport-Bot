@@ -1,0 +1,90 @@
+.container {
+  width: 100%;
+}
+.container > div {
+  width: 100%;
+}
+.title {
+  font-family: Inter;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 15px;
+  letter-spacing: 0em;
+  text-align: left;
+  color: #6750a4;
+}
+
+.title_input {
+  width: 100%;
+  font-family: Inter;
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 29px;
+  letter-spacing: 0em;
+  text-align: left;
+  border: none;
+}
+.title_input::placeholder {
+  /* Введите название тренировки */
+
+  height: 29px;
+
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 24px;
+  line-height: 29px;
+  /* identical to box height */
+
+  /* gray */
+  color: #7e7d7d;
+
+  /* Inside auto layout */
+  flex: none;
+  order: 1;
+  flex-grow: 0;
+}
+
+.top_selectors {
+  height: 50px;
+}
+
+.goal {
+  float: left;
+}
+.goal .dropdown-menu {
+  background: none;
+  font-family: Roboto;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  letter-spacing: 0.25px;
+  text-align: left;
+  color: #49454f;
+  border: none;
+}
+.group {
+  float: right;
+}
+.group .dropdown-menu {
+  background: none;
+  font-family: Roboto;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  letter-spacing: 0.25px;
+  text-align: left;
+  color: #49454f;
+  border: none;
+  left: -20px;
+}
+
+.add_set_button {
+  font-family: Roboto;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 20px;
+  letter-spacing: 0.10000000149011612px;
+  text-align: center;
+  color: #6750a4;
+}

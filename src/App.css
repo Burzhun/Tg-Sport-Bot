@@ -1,0 +1,360 @@
+@font-face {
+  font-family: 'Roboto-Regular';
+  src: url(./assets/Roboto-Regular.ttf) format('truetype');
+}
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+.card {
+  padding: 2em;
+}
+
+.read-the-docs {
+  color: #888;
+}
+
+.container {
+  width: 100%;
+}
+.container > div {
+  width: 100%;
+}
+.title {
+  font-family: Inter;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 15px;
+  letter-spacing: 0em;
+  text-align: left;
+  color: #6750a4;
+}
+
+.title_input {
+  width: 100%;
+  font-family: Inter;
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 29px;
+  letter-spacing: 0em;
+  text-align: left;
+  border: none;
+}
+.title_input::placeholder {
+  /* Введите название тренировки */
+
+  height: 29px;
+
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 24px;
+  line-height: 29px;
+  /* identical to box height */
+
+  /* gray */
+  color: #7e7d7d;
+
+  /* Inside auto layout */
+  flex: none;
+  order: 1;
+  flex-grow: 0;
+}
+
+.top_selectors {
+  height: 50px;
+}
+
+.goal {
+  float: left;
+}
+.goal .dropdown-menu {
+  background: none;
+  font-family: Roboto-Regular;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  letter-spacing: 0.25px;
+  text-align: left;
+  color: #49454f;
+  border: none;
+}
+.group {
+  float: right;
+}
+.group .dropdown-menu {
+  background: none;
+  font-family: Roboto-Regular;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  letter-spacing: 0.25px;
+  text-align: left;
+  color: #49454f;
+  border: none;
+  left: -20px;
+}
+
+.add_set_button {
+  font-family: Roboto-Regular;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 20px;
+  letter-spacing: 0.10000000149011612px;
+  text-align: center;
+  color: #6750a4;
+}
+
+.setContainer {
+  background: #fef7ff;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid #7e7d7d;
+  margin-bottom: 20px;
+}
+
+.set_top {
+  height: 45px;
+}
+.set_top .top_left {
+  float: left;
+  display: inline-block;
+  vertical-align: top;
+}
+.set_top .top_right {
+  float: right;
+  display: inline-block;
+  vertical-align: top;
+}
+.set_top .top_right span {
+  margin-right: 15px;
+}
+.button_icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  gap: 10px;
+  display: inline-block;
+  background: #e8def8;
+}
+.button_icon svg {
+  position: relative;
+  top: 5px;
+}
+.excercise_border {
+  display: block;
+  border-top: 2px solid #e7ddf8;
+  width: 80%;
+  margin: 10px auto;
+}
+.excercise {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin: 10px 15px;
+}
+.excercise span {
+  display: inline-block;
+  margin-right: 10px;
+}
+.excercise .excercise_left .name {
+  height: 20px;
+  padding: 6px;
+  border-radius: 8px;
+  background: #e8def8;
+  padding: 6px 12px;
+  font-family: Roboto-Regular;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 20px;
+  letter-spacing: 0.10000000149011612px;
+  text-align: center;
+  color: #050505;
+}
+.excercise span svg {
+  position: relative;
+  top: 7px;
+}
+.rep_button {
+  height: 20px;
+  border-radius: 8px;
+  background: #e8def8;
+  padding: 6px 12px;
+  font-family: Roboto-Regular;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  letter-spacing: 0.10000000149011612px;
+  text-align: center;
+  color: #050505;
+  margin-left: 20px;
+  display: inline-flex;
+  vertical-align: top;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 5px;
+}
+
+.rep_index {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.repeatedContainer .excercise {
+  gap: 15px;
+}
+.repeatedContainer {
+  display: flex;
+  justify-content: start;
+  flex-direction: row;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.repeatedExcercise {
+  padding: 10px;
+  border-radius: 20px 20px 0px 0px;
+  border: 2px;
+  gap: 0px;
+  border: 2px solid #e8def8;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+.repeatedExcercise .excercise {
+  margin: 5px 10px;
+}
+.excercise.repeated .name1 {
+  background: none;
+}
+
+.exercise-search {
+  display: block;
+  position: fixed;
+  height: 432px;
+  top: calc(100% - 432px);
+  background-color: #fef7ff;
+  width: 100%;
+  left: 0;
+
+  border-radius: 24px 24px 0px 0px;
+  border: 1px solid #cac4d0;
+}
+
+.exercise-search .search {
+  background-color: #e6e0e9;
+  height: 54px;
+  padding: 20px;
+  position: relative;
+}
+.exercise-search .search input {
+  display: inline-block;
+  width: 60%;
+  margin-right: 1%;
+  height: 50px;
+  background-color: #e6e0e9;
+  border: 1px solid #6750a4;
+  font-family: Roboto;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+  letter-spacing: 0.5px;
+  text-align: left;
+  padding-left: 40px;
+  color: black;
+}
+.exercise-search .search button {
+  display: inline-block;
+  width: 23%;
+  margin-left: 1%;
+  height: 50px;
+  text-align: center;
+  border-radius: 10px;
+}
+.exercise-search .search button span {
+  padding: 0;
+}
+.exercise-search .search svg {
+  position: absolute;
+  left: calc(20px + 8%);
+  top: 35px;
+}
+
+.search_result {
+  text-align: center;
+  padding-left: 20px;
+}
+.search_result_title {
+  font-family: Roboto-Regular;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 19px;
+  letter-spacing: 0.07739938050508499px;
+  text-align: left;
+  color: #7e7d7d;
+  display: inline-block;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+.search_result_name {
+  font-family: Roboto-Regular;
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 28px;
+  letter-spacing: 0.07739938050508499px;
+  text-align: left;
+  color: black;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+.add_exercise_button {
+  font-family: Roboto;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  letter-spacing: 0.10000000149011612px;
+  text-align: center;
+  color: #6750a4;
+  text-decoration: underline;
+}
+
+:where(.css-dev-only-do-not-override-1drr2mu).ant-dropdown .ant-dropdown-menu,
+:where(.css-dev-only-do-not-override-1drr2mu).ant-dropdown-menu-submenu
+  .ant-dropdown-menu {
+  background: #e8def8;
+}
+.ant-dropdown-menu-title-content span {
+  text-decoration: underline;
+}
