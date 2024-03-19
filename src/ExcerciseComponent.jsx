@@ -7,13 +7,7 @@ import {
   repIndexIcon,
 } from './icons';
 import { Button, Dropdown } from 'antd';
-const names = [
-  'Жим штангой',
-  'Жим штангой узким хватом',
-  'Жим штангой широким хватом',
-  'Жим штангой в наклонной скамье',
-  'Жим гантелями',
-];
+
 const weights = [...Array(20)].map((v, i) => i * 10 + 10);
 const repsNumber = [...Array(20)].map((v, i) => i + 1);
 const timeValues = [
@@ -38,11 +32,8 @@ function ExcerciseComponent({
   index,
   updateExcercise,
   deleteExercise,
+  setEditedExercise,
 }) {
-  const items = names.map((n) => ({
-    key: n,
-    label: <span onClick={() => updateExcercise('name', n)}>{n}</span>,
-  }));
   const weightItems = weights.map((n) => ({
     key: n,
     label: <span onClick={() => updateExcercise('weight', n)}>{n}</span>,
@@ -59,15 +50,14 @@ function ExcerciseComponent({
   return (
     <div className={'excercise ' + (index > 0 ? 'repeated' : '')}>
       <div className="excercise_left">
-        <Dropdown
-          menu={{
-            items,
+        <span
+          onClick={() => {
+            setEditedExercise();
           }}
-          placement="bottomLeft"
-          arrow
+          className="name name1"
         >
-          <span className="name name1">{ex.name}</span>
-        </Dropdown>
+          {ex.name}
+        </span>
 
         {ex.weight && (
           <React.Fragment>
@@ -79,7 +69,7 @@ function ExcerciseComponent({
               placement="bottomLeft"
               arrow
             >
-              <span className="name name1">{ex.weight}</span>
+              <span className="name name1">{ex.weight} кг</span>
             </Dropdown>
           </React.Fragment>
         )}

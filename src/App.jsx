@@ -16,7 +16,7 @@ function App() {
         [
           {
             name: 'Жим штангой',
-            weight: '80кг',
+            weight: '80',
             repsCount: 3,
           },
           {
@@ -27,7 +27,7 @@ function App() {
         [
           {
             name: 'Жим штангой',
-            weight: '80кг',
+            weight: '80',
             repsCount: 3,
           },
           {
@@ -39,6 +39,7 @@ function App() {
     },
   ]);
   const [selectedSet, setSelectedSet] = useState();
+  const [editedExercise, setEditedExercise] = useState();
 
   const goalItems = [
     {
@@ -136,11 +137,18 @@ function App() {
       if (e.parameters.includes('leadTime')) newExercise.leadTime = '02:30';
       const i = selectedSet;
       console.log(i, newSets, e.parameters, newExercise);
-      newSets[i].exercises.forEach((t, j) => {
-        newSets[i].exercises[j].push(newExercise);
-      });
+      if (editedExercise !== undefined) {
+        newSets[i].exercises.forEach((t, j) => {
+          newSets[i].exercises[j][editedExercise] = newExercise;
+        });
+      } else {
+        newSets[i].exercises.forEach((t, j) => {
+          newSets[i].exercises[j].push(newExercise);
+        });
+      }
       setSets(newSets);
       setSelectedSet(undefined);
+      setEditedExercise(undefined);
     },
     [sets, selectedSet],
   );
@@ -156,11 +164,34 @@ function App() {
     setSets(newSets);
   }, [sets]);
 
-  const deleteSet = useCallback((i) => {
-    const newSets = sets.slice(0);
-    newSets.splice(i, 1);
-    setSets(newSets);
-  }, []);
+  const deleteSet = useCallback(
+    (i) => {
+      const newSets = sets.slice(0);
+      newSets.splice(i, 1);
+      setSets(newSets);
+    },
+    [sets],
+  );
+
+  const setRepsCount = useCallback(
+    (i, c) => {
+      const newSets = sets.slice(0);
+      const l = newSets[i].reps;
+      newSets[i].reps = c;
+      console.log(i, c, l, sets);
+      if (l > c) {
+        newSets[i].exercises = newSets[i].exercises.slice(0, c);
+      } else {
+        let t = l;
+        while (t < c) {
+          newSets[i].exercises.push(newSets[i].exercises[0].slice(0));
+          t++;
+        }
+      }
+      setSets(newSets);
+    },
+    [sets],
+  );
 
   return (
     <>
@@ -202,6 +233,8 @@ function App() {
           setSelectedSet={setSelectedSet}
           deleteExercise={deleteExercise}
           deleteSet={deleteSet}
+          setRepsCount={setRepsCount}
+          setEditedExercise={setEditedExercise}
         />
         <div>
           <a

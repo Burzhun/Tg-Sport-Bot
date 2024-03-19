@@ -12,6 +12,8 @@ import {
   setHideRepsIcon,
 } from './icons';
 import ExcerciseComponent from './ExcerciseComponent';
+import { Dropdown } from 'antd';
+const repsNumber = [...Array(20)].map((v, i) => i + 1);
 
 function SetsComponent({
   sets,
@@ -21,7 +23,19 @@ function SetsComponent({
   setSelectedSet,
   deleteExercise,
   deleteSet,
+  setRepsCount,
+  setEditedExercise,
 }) {
+  const repsItems = (i) =>
+    repsNumber.map((n) => ({
+      key: n,
+      label: (
+        <span key={n} onClick={() => setRepsCount(i, n)}>
+          {n}
+        </span>
+      ),
+    }));
+
   return sets.map((s, i) => (
     <div className="setContainer">
       <div className="set_top">
@@ -34,10 +48,18 @@ function SetsComponent({
           >
             {s.showReps ? setHideRepsIcon : setShowRepsIcon}
           </span>
-          <span>Сет</span>
-          <span className="rep_button">
-            {s.repsCount} {repIcon}
-          </span>
+          <span>Сет на</span>
+          <Dropdown
+            menu={{
+              items: repsItems(i),
+            }}
+            placement="bottomLeft"
+            arrow
+          >
+            <span className="rep_button">
+              {s.reps} {repIcon}
+            </span>
+          </Dropdown>
         </div>
         <div className="top_right">
           <span
@@ -64,7 +86,7 @@ function SetsComponent({
         [...Array(s.exercises.length)].map((elementInArray, repIndex) => (
           <div className="repeatedContainer">
             <div className="rep_index">
-              {repIndex}
+              {repIndex + 1}
               {repIndexIcon}
             </div>
             <div className="repeatedExcercise">
@@ -77,6 +99,10 @@ function SetsComponent({
                   index={repIndex}
                   ex={ex}
                   deleteExercise={(exindex) => deleteExercise(i, exIndex)}
+                  setEditedExercise={() => {
+                    setEditedExercise(exIndex);
+                    setSelectedSet(i);
+                  }}
                 />
               ))}
             </div>
@@ -94,6 +120,10 @@ function SetsComponent({
             ex={ex}
             index={0}
             deleteExercise={(exindex) => deleteExercise(i, exIndex)}
+            setEditedExercise={() => {
+              setEditedExercise(exIndex);
+              setSelectedSet(i);
+            }}
           />
         ))}
       <div style={{ textAlign: 'left', marginLeft: '10px' }}>
