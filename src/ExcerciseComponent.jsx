@@ -6,8 +6,11 @@ import {
   leadTimeIcon,
   repIndexIcon,
 } from './icons';
-import { Button, Dropdown } from 'antd';
-
+import { Button, Dropdown, Input } from 'antd';
+import { MobileTimePicker } from '@mui/x-date-pickers/MobileTimePicker';
+import dayjs from 'dayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 const weights = [...Array(20)].map((v, i) => i * 10 + 10);
 const repsNumber = [...Array(20)].map((v, i) => i + 1);
 const timeValues = [
@@ -49,71 +52,85 @@ function ExcerciseComponent({
 
   return (
     <div className={'excercise ' + (index > 0 ? 'repeated' : '')}>
-      <div className="excercise_left">
-        <span
-          onClick={() => {
-            setEditedExercise();
-          }}
-          className="name name1"
-        >
-          {ex.name}
-        </span>
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <div className="excercise_left">
+          <span
+            onClick={() => {
+              setEditedExercise();
+            }}
+            className="name name1"
+          >
+            {ex.name}
+          </span>
 
-        {ex.weight && (
-          <React.Fragment>
-            <span className="excersice_icon">{weightIcon}</span>
-            <Dropdown
-              menu={{
-                items: weightItems,
-              }}
-              placement="bottomLeft"
-              arrow
-            >
-              <span className="name name1">{ex.weight} кг</span>
-            </Dropdown>
-          </React.Fragment>
-        )}
+          {ex.values.weight !== 0 && (
+            <React.Fragment>
+              <span className="excersice_icon">{weightIcon}</span>
+              <Dropdown
+                menu={{
+                  items: weightItems,
+                }}
+                placement="bottomLeft"
+                arrow
+              >
+                <span className="name name1">{ex.values.weight}</span>
+              </Dropdown>
+            </React.Fragment>
+          )}
 
-        {ex.repsCount && (
-          <React.Fragment>
-            <span className="excersice_icon">{exRepsIcon}</span>
-            <Dropdown
-              menu={{
-                items: repsItems,
-              }}
-              placement="bottomLeft"
-              arrow
-            >
-              <span className="name">{ex.repsCount}</span>
-            </Dropdown>
-          </React.Fragment>
-        )}
+          {ex.values.repsCount > 0 && (
+            <React.Fragment>
+              <span className="excersice_icon">{exRepsIcon}</span>
+              <Dropdown
+                menu={{
+                  items: repsItems,
+                }}
+                placement="bottomLeft"
+                arrow
+              >
+                <span className="name">{ex.values.repsCount}</span>
+              </Dropdown>
+            </React.Fragment>
+          )}
 
-        {ex.leadTime && (
-          <React.Fragment>
-            <span className="excersice_icon">{leadTimeIcon}</span>
-            <Dropdown
-              menu={{
-                items: timeItems,
-              }}
-              placement="bottomLeft"
-              arrow
-            >
-              <span className="name">{ex.leadTime}</span>
-            </Dropdown>
-          </React.Fragment>
-        )}
-      </div>
-      <div className="excercise_right">
-        <span
-          className=""
-          onClick={() => {
-            deleteExercise();
-          }}
-        >
-          {deleteIcon}
-        </span>
-      </div>
+          {ex.values.leadTime !== 0 && (
+            <React.Fragment>
+              <span className="excersice_icon">{leadTimeIcon}</span>
+
+              <span className="name time">
+                <MobileTimePicker
+                  views={['minutes', 'seconds']}
+                  defaultValue={dayjs('2022-04-17T15:' + ex.values.leadTime)}
+                  onChange={(e) => {
+                    console.log(e);
+                    updateExcercise(
+                      'leadTime',
+                      `${e.$m < 10 ? '0' : ''}${e.$m}:${e.$s < 10 ? '0' : ''}${
+                        e.$s
+                      }`,
+                    );
+                  }}
+                  slots={{
+                    textField: (params) => (
+                      <Input variant="filled" {...params} />
+                    ),
+                  }}
+                />
+              </span>
+            </React.Fragment>
+          )}
+        </div>
+        <div className="excercise_right">
+          <span
+            className=""
+            onClick={() => {
+              deleteExercise();
+            }}
+          >
+            {deleteIcon}
+          </span>
+        </div>
+      </LocalizationProvider>
     </div>
   );
 }

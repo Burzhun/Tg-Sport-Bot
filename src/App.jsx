@@ -1,98 +1,94 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import './App.css';
 import SetsComponent from './SetsComponent';
 import ExerciseSearchComponent from './ExerciseSearchComponent';
 import { Dropdown } from 'antd';
+import { LoadTrainingTemplate, saveTrainingTemplate } from './api';
+
+const coachId = '5bbb994d-2201-4d34-96dd-e91a9913150a';
+const trainId = 'fb316c4f-4f62-413e-9b80-28db3b2d1ec6';
+
+const data = [
+  {
+    closed: false,
+    showReps: false,
+    reps: 2,
+    exercises: [
+      [
+        {
+          name: 'Жим штангой',
+          weight: '80',
+          repsCount: 3,
+        },
+        {
+          name: 'Планка',
+          leadTime: '02:30',
+        },
+      ],
+      [
+        {
+          name: 'Жим штангой',
+          weight: '80',
+          repsCount: 3,
+        },
+        {
+          name: 'Планка',
+          leadTime: '02:30',
+        },
+      ],
+    ],
+  },
+];
 
 function App() {
   const [goal, setGoal] = useState();
   const [group, setGroup] = useState();
-  const [sets, setSets] = useState([
-    {
-      closed: false,
-      showReps: false,
-      reps: 2,
-      exercises: [
-        [
-          {
-            name: 'Жим штангой',
-            weight: '80',
-            repsCount: 3,
-          },
-          {
-            name: 'Планка',
-            leadTime: '02:30',
-          },
-        ],
-        [
-          {
-            name: 'Жим штангой',
-            weight: '80',
-            repsCount: 3,
-          },
-          {
-            name: 'Планка',
-            leadTime: '02:30',
-          },
-        ],
-      ],
-    },
-  ]);
+  const [template, setTemplate] = useState();
+  const [sets, setSets] = useState([]);
   const [selectedSet, setSelectedSet] = useState();
   const [editedExercise, setEditedExercise] = useState();
 
-  const goalItems = [
-    {
-      key: '1',
-      label: (
-        <span
-          onClick={() => {
-            setGoal('Похудение');
-          }}
-        >
-          Похудение
-        </span>
-      ),
-    },
-    {
-      key: '2',
-      label: (
-        <span
-          onClick={() => {
-            setGoal('Набор веса');
-          }}
-        >
-          Набор веса
-        </span>
-      ),
-    },
-  ];
-  const groupItems = [
-    {
-      key: '1',
-      label: (
-        <span
-          onClick={() => {
-            setGroup('Ноги');
-          }}
-        >
-          Ноги
-        </span>
-      ),
-    },
-    {
-      key: '2',
-      label: (
-        <span
-          onClick={() => {
-            setGroup('Руки');
-          }}
-        >
-          Руки
-        </span>
-      ),
-    },
-  ];
+  useEffect(() => {
+    (async () => {
+      const res = await LoadTrainingTemplate(trainId);
+      const sets = res.trainTemplate.sets.map((s) => ({
+        closed: false,
+        showReps: false,
+        lapsCount: s.lapsCount,
+        exercises: [s.lap.exercises],
+      }));
+
+      setSets(sets);
+      setTemplate(res.trainTemplate);
+    })();
+  }, []);
+
+  const goalItems = ['Похудение', 'Набор веса'].map((n, i) => ({
+    key: n,
+    label: (
+      <span
+        onClick={() => {
+          setGoal(n);
+        }}
+      >
+        {n}
+      </span>
+    ),
+  }));
+
+  const groupItems = ['Ноги', 'Руки'].map((n, i) => ({
+    key: n,
+    label: (
+      <span
+        onClick={() => {
+          setGroup(n);
+        }}
+      >
+        {n}
+      </span>
+    ),
+  }));
+
   const toggleClose = (close, index) => {
     const newSets = sets.slice(0);
     newSets[index].closed = close;
@@ -106,37 +102,48 @@ function App() {
   };
 
   const updateExcercise = (field, value, exIndex, repIndex, setIndex) => {
-    console.log(field, value, exIndex, repIndex, setIndex);
     const newSets = sets.slice(0);
     if (!newSets[setIndex].showReps || field === 'name') {
       newSets[setIndex].exercises.forEach((s, i) => {
-        newSets[setIndex].exercises[i][exIndex][field] = value;
+        newSets[setIndex].exercises[i][exIndex]['values'][field] = value;
       });
     } else {
-      newSets[setIndex].exercises[repIndex][exIndex][field] = value;
+      newSets[setIndex].exercises[repIndex][exIndex]['values'][field] = value;
     }
     setSets(newSets);
+    saveTrainingTemplate(newSets, trainId, template);
   };
 
-  const deleteExercise = useCallback((setIndex, exIndex) => {
-    const newSets = sets.slice(0);
-    newSets[setIndex].exercises.forEach((t, i) => {
-      newSets[setIndex].exercises[i].splice(exIndex, 1);
-    });
-    setSets(newSets);
-  }, []);
+  const deleteExercise = useCallback(
+    (setIndex, exIndex) => {
+      const newSets = sets.slice(0);
+      newSets[setIndex].exercises.forEach((t, i) => {
+        newSets[setIndex].exercises[i].splice(exIndex, 1);
+      });
+      setSets(newSets);
+      saveTrainingTemplate(newSets, trainId, template);
+    },
+    [template],
+  );
 
   const addExercise = useCallback(
     (e) => {
       const newSets = sets.slice(0);
       const newExercise = {
         name: e.title,
+        exerciseId: e.id,
+        values: {
+          repsCount: 0,
+          weight: 0,
+          leadTime: 0,
+        },
       };
-      if (e.parameters.includes('weight')) newExercise.weight = '40кг';
-      if (e.parameters.includes('repsCount')) newExercise.repsCount = 1;
-      if (e.parameters.includes('leadTime')) newExercise.leadTime = '02:30';
+      if (e.parameters.includes('weight')) newExercise.values.weight = '40кг';
+      if (e.parameters.includes('repsCount')) newExercise.values.repsCount = 1;
+      if (e.parameters.includes('leadTime'))
+        newExercise.values.leadTime = '02:30';
       const i = selectedSet;
-      console.log(i, newSets, e.parameters, newExercise);
+      console.log(i, newSets, e, newExercise);
       if (editedExercise !== undefined) {
         newSets[i].exercises.forEach((t, j) => {
           newSets[i].exercises[j][editedExercise] = newExercise;
@@ -149,8 +156,9 @@ function App() {
       setSets(newSets);
       setSelectedSet(undefined);
       setEditedExercise(undefined);
+      saveTrainingTemplate(newSets, trainId, template);
     },
-    [sets, selectedSet],
+    [sets, template, selectedSet],
   );
 
   const addSet = useCallback(() => {
@@ -158,7 +166,7 @@ function App() {
     newSets.push({
       closed: false,
       showReps: false,
-      reps: 1,
+      lapsCount: 1,
       exercises: [[]],
     });
     setSets(newSets);
@@ -176,8 +184,8 @@ function App() {
   const setRepsCount = useCallback(
     (i, c) => {
       const newSets = sets.slice(0);
-      const l = newSets[i].reps;
-      newSets[i].reps = c;
+      const l = newSets[i].lapsCount;
+      newSets[i].lapsCount = c;
       console.log(i, c, l, sets);
       if (l > c) {
         newSets[i].exercises = newSets[i].exercises.slice(0, c);

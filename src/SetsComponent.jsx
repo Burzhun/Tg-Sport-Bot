@@ -57,7 +57,7 @@ function SetsComponent({
             arrow
           >
             <span className="rep_button">
-              {s.reps} {repIcon}
+              {s.lapsCount} {repIcon}
             </span>
           </Dropdown>
         </div>

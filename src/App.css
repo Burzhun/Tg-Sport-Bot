@@ -202,7 +202,18 @@
   letter-spacing: 0.10000000149011612px;
   text-align: center;
   color: #050505;
+  vertical-align: top;
 }
+
+.excercise .excercise_left .name.time {
+  width: 58px;
+  padding: 0;
+  height: 32px;
+}
+.excercise .excercise_left .name.time input {
+  background: none;
+}
+
 .excercise span svg {
   position: relative;
   top: 7px;
@@ -286,7 +297,7 @@
   height: 50px;
   background-color: #e6e0e9;
   border: 1px solid #6750a4;
-  font-family: Roboto;
+  font-family: Roboto-Regular;
   font-size: 16px;
   font-weight: 400;
   line-height: 24px;
@@ -341,7 +352,7 @@
 }
 
 .add_exercise_button {
-  font-family: Roboto;
+  font-family: Roboto-Regular;
   font-size: 14px;
   font-weight: 500;
   line-height: 20px;
