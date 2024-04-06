@@ -161,7 +161,7 @@ function App() {
           leadTime: 0,
         },
       };
-      if (e.parameters.includes('weight')) newExercise.values.weight = '40кг';
+      if (e.parameters.includes('weight')) newExercise.values.weight = 10;
       if (e.parameters.includes('repsCount')) newExercise.values.repsCount = 1;
       if (e.parameters.includes('leadTime')) newExercise.values.leadTime = 150;
       const i = selectedSet;
