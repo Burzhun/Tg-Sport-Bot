@@ -1,6 +1,8 @@
 const token = import.meta.env.VITE_TOKEN;
 var headers = new Headers();
-headers.append('Authorization', 'Bearer ' + token);
+if (window.location.hash)
+  headers.append('Authorization', decodeURI(location.hash).slice(1));
+else headers.append('Authorization', 'Bearer ' + token);
 headers.append('Content-Type', 'application/json');
 
 export const LoadExercises = async (exName) => {
