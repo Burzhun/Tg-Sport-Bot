@@ -1,7 +1,7 @@
 const token = import.meta.env.VITE_TOKEN;
 var headers = new Headers();
-if (window.location.hash)
-  headers.append('Authorization', decodeURI(location.hash).slice(1));
+if (window.location.search?.length > 14)
+  headers.append('Authorization', decodeURI(location.search).slice(14));
 else headers.append('Authorization', 'Bearer ' + token);
 headers.append('Content-Type', 'application/json');
 
