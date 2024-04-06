@@ -1,6 +1,7 @@
 const token = import.meta.env.VITE_TOKEN;
 var headers = new Headers();
 headers.append('Authorization', 'Bearer ' + token);
+headers.append('Content-Type', 'application/json');
 
 export const LoadExercises = async (exName) => {
   const url = `https://sil.myfast.space/api/exercises/find?query=${exName}`;
@@ -38,9 +39,8 @@ const LoadExerciseNames = async (trainTemplate) => {
   let i = 0;
   for (const s of trainTemplate.sets) {
     for (const e of s.lap.exercises) {
-      if (cache[s.exerciseId]) e.name = cache[s.exerciseId];
+      if (cache[e.exerciseId]) e.name = cache[e.exerciseId];
       else {
-        console.log(e.exerciseId);
         const res = await LoadExercise(e.exerciseId);
         e.name = res.exercise.title;
         cache[s.exerciseId] = res.exercise.title;
@@ -50,18 +50,27 @@ const LoadExerciseNames = async (trainTemplate) => {
 };
 
 export const saveTrainingTemplate = async (sets, trainTemplateId, template) => {
-  const sets2 = sets.map((s) => ({
-    extendedLaps: [],
-    lapsCount: s.lapsCount,
-    lap: {
-      exercises: s.exercises[0].map((e) => ({
-        exerciseId: e.exerciseId,
-        values: e.values,
-      })),
-    },
-  }));
-  console.log(sets2);
+  const sets2 = sets.map((s) => {
+    const t = {
+      extendedLaps: [],
+      lapsCount: s.lapsCount,
+      lap: {
+        exercises: s.exercises[0].map((e) => ({
+          exerciseId: e.exerciseId,
+          values: e.values,
+        })),
+      },
+    };
+    if (s.lapsCount > 1) {
+      for (let i = 1; i < s.lapsCount; i++) {
+        t.extendedLaps.push({
+          values: s.exercises[i].map((e) => e.values),
+        });
+      }
+    }
 
+    return t;
+  });
   const url =
     'https://sil.myfast.space/api/trains/template/update/' + trainTemplateId;
   try {

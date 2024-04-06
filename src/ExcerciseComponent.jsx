@@ -13,21 +13,15 @@ import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 const weights = [...Array(20)].map((v, i) => i * 10 + 10);
 const repsNumber = [...Array(20)].map((v, i) => i + 1);
-const timeValues = [
-  '0:15',
-  '0:30',
-  '0:45',
-  '1:00',
-  '1:30',
-  '1:45',
-  '2:00',
-  '2:30',
-  '3:00',
-  '3:30',
-  '4:00',
-  '4:30',
-  '5:00',
-];
+const timeToString = (t) => {
+  const m = Math.floor(t / 60);
+  const s = t % 60;
+  return (m < 10 ? '0' + m : m) + ':' + (s < 10 ? '0' + s : s);
+};
+const stringToTime = (s) => {
+  const [s1, s2] = s.split(':');
+  return parseInt(s1) * 60 + parseInt(s2);
+};
 
 function ExcerciseComponent({
   ex,
@@ -43,11 +37,14 @@ function ExcerciseComponent({
   }));
   const repsItems = repsNumber.map((n) => ({
     key: n,
-    label: <span onClick={() => updateExcercise('repsCount', n)}>{n}</span>,
-  }));
-  const timeItems = timeValues.map((n) => ({
-    key: n,
-    label: <span onClick={() => updateExcercise('leadTime', n)}>{n}</span>,
+    label: (
+      <span
+        style={{ display: 'inline-block', width: '30px', textAlign: 'center' }}
+        onClick={() => updateExcercise('repsCount', n)}
+      >
+        {n}
+      </span>
+    ),
   }));
 
   return (
@@ -98,38 +95,32 @@ function ExcerciseComponent({
               <span className="excersice_icon">{leadTimeIcon}</span>
 
               <span className="name time">
-                <MobileTimePicker
-                  views={['minutes', 'seconds']}
-                  defaultValue={dayjs('2022-04-17T15:' + ex.values.leadTime)}
+                <input
+                  value={timeToString(ex.values.leadTime)}
+                  onFocus={(e) => e.target.showPicker()}
+                  type="time"
                   onChange={(e) => {
-                    console.log(e);
-                    updateExcercise(
-                      'leadTime',
-                      `${e.$m < 10 ? '0' : ''}${e.$m}:${e.$s < 10 ? '0' : ''}${
-                        e.$s
-                      }`,
-                    );
+                    console.log(e.target.value);
+                    updateExcercise('leadTime', stringToTime(e.target.value));
                   }}
-                  slots={{
-                    textField: (params) => (
-                      <Input variant="filled" {...params} />
-                    ),
-                  }}
+                  name="appt-time"
                 />
               </span>
             </React.Fragment>
           )}
         </div>
-        <div className="excercise_right">
-          <span
-            className=""
-            onClick={() => {
-              deleteExercise();
-            }}
-          >
-            {deleteIcon}
-          </span>
-        </div>
+        {index === 0 && (
+          <div className="excercise_right">
+            <span
+              className=""
+              onClick={() => {
+                deleteExercise();
+              }}
+            >
+              {deleteIcon}
+            </span>
+          </div>
+        )}
       </LocalizationProvider>
     </div>
   );

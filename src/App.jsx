@@ -51,12 +51,28 @@ function App() {
   useEffect(() => {
     (async () => {
       const res = await LoadTrainingTemplate(trainId);
-      const sets = res.trainTemplate.sets.map((s) => ({
-        closed: false,
-        showReps: false,
-        lapsCount: s.lapsCount,
-        exercises: [s.lap.exercises],
-      }));
+      const sets = res.trainTemplate.sets.map((s) => {
+        const exercises = [s.lap.exercises];
+        if (s.lapsCount > 1) {
+          const lap = [];
+          for (let i = 1; i < s.lapsCount; i++) {
+            console.log(s.extendedLaps[i - 1], i);
+            exercises.push(
+              s.extendedLaps[i - 1].values.map((v, j) => ({
+                values: { ...v },
+                name: s.lap.exercises[j].name,
+              })),
+            );
+          }
+        }
+
+        return {
+          closed: false,
+          showReps: false,
+          lapsCount: s.lapsCount,
+          exercises: JSON.parse(JSON.stringify(exercises)),
+        };
+      });
 
       setSets(sets);
       setTemplate(res.trainTemplate);
@@ -108,7 +124,14 @@ function App() {
         newSets[setIndex].exercises[i][exIndex]['values'][field] = value;
       });
     } else {
-      newSets[setIndex].exercises[repIndex][exIndex]['values'][field] = value;
+      newSets[setIndex].exercises[repIndex] = JSON.parse(
+        JSON.stringify(newSets[setIndex].exercises[repIndex]),
+      );
+      const t = newSets[setIndex].exercises[repIndex][exIndex]['values'];
+
+      t[field] = value;
+
+      newSets[setIndex].exercises[repIndex][exIndex]['values'] = t;
     }
     setSets(newSets);
     saveTrainingTemplate(newSets, trainId, template);
@@ -140,8 +163,7 @@ function App() {
       };
       if (e.parameters.includes('weight')) newExercise.values.weight = '40кг';
       if (e.parameters.includes('repsCount')) newExercise.values.repsCount = 1;
-      if (e.parameters.includes('leadTime'))
-        newExercise.values.leadTime = '02:30';
+      if (e.parameters.includes('leadTime')) newExercise.values.leadTime = 150;
       const i = selectedSet;
       console.log(i, newSets, e, newExercise);
       if (editedExercise !== undefined) {
@@ -170,6 +192,7 @@ function App() {
       exercises: [[]],
     });
     setSets(newSets);
+    saveTrainingTemplate(newSets, trainId, template);
   }, [sets]);
 
   const deleteSet = useCallback(
@@ -177,6 +200,7 @@ function App() {
       const newSets = sets.slice(0);
       newSets.splice(i, 1);
       setSets(newSets);
+      saveTrainingTemplate(newSets, trainId, template);
     },
     [sets],
   );
@@ -186,7 +210,6 @@ function App() {
       const newSets = sets.slice(0);
       const l = newSets[i].lapsCount;
       newSets[i].lapsCount = c;
-      console.log(i, c, l, sets);
       if (l > c) {
         newSets[i].exercises = newSets[i].exercises.slice(0, c);
       } else {
@@ -197,8 +220,9 @@ function App() {
         }
       }
       setSets(newSets);
+      saveTrainingTemplate(newSets, trainId, template);
     },
-    [sets],
+    [sets, template],
   );
 
   return (

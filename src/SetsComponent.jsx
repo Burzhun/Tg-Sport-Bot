@@ -30,7 +30,15 @@ function SetsComponent({
     repsNumber.map((n) => ({
       key: n,
       label: (
-        <span key={n} onClick={() => setRepsCount(i, n)}>
+        <span
+          style={{
+            display: 'inline-block',
+            width: '30px',
+            textAlign: 'center',
+          }}
+          key={n}
+          onClick={() => setRepsCount(i, n)}
+        >
           {n}
         </span>
       ),

@@ -206,12 +206,17 @@
 }
 
 .excercise .excercise_left .name.time {
-  width: 58px;
+  width: 80px;
   padding: 0;
   height: 32px;
 }
 .excercise .excercise_left .name.time input {
   background: none;
+  border: none;
+  margin-top: 7px;
+}
+.excercise .excercise_left .name.time input:focus-visible {
+  outline: none;
 }
 
 .excercise span svg {
