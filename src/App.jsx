@@ -5,8 +5,8 @@ import ExerciseSearchComponent from './ExerciseSearchComponent';
 import { Dropdown } from 'antd';
 import { LoadTrainingTemplate, saveTrainingTemplate } from './api';
 
-const coachId = '5bbb994d-2201-4d34-96dd-e91a9913150a';
-const trainId = 'fb316c4f-4f62-413e-9b80-28db3b2d1ec6';
+const searchParams = new URLSearchParams(window.location.search);
+const trainId = searchParams.get('trainId');
 
 const data = [
   {

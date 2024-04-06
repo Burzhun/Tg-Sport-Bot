@@ -1,8 +1,7 @@
-const token = import.meta.env.VITE_TOKEN;
 var headers = new Headers();
-if (window.location.search?.length > 14)
-  headers.append('Authorization', decodeURI(location.search).slice(14));
-else headers.append('Authorization', 'Bearer ' + token);
+const searchParams = new URLSearchParams(window.location.search);
+const token = searchParams.get('access_token');
+headers.append('Authorization', token);
 headers.append('Content-Type', 'application/json');
 
 export const LoadExercises = async (exName) => {
