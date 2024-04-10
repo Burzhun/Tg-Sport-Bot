@@ -3,42 +3,16 @@ import './App.css';
 import SetsComponent from './SetsComponent';
 import ExerciseSearchComponent from './ExerciseSearchComponent';
 import { Dropdown } from 'antd';
-import { LoadTrainingTemplate, saveTrainingTemplate } from './api';
+import {
+  CreateTemplate,
+  LoadTrainingTemplate,
+  saveTrainingTemplate,
+} from './api';
 
 const searchParams = new URLSearchParams(window.location.search);
 const trainId = searchParams.get('trainId');
-
-const data = [
-  {
-    closed: false,
-    showReps: false,
-    reps: 2,
-    exercises: [
-      [
-        {
-          name: 'Жим штангой',
-          weight: '80',
-          repsCount: 3,
-        },
-        {
-          name: 'Планка',
-          leadTime: '02:30',
-        },
-      ],
-      [
-        {
-          name: 'Жим штангой',
-          weight: '80',
-          repsCount: 3,
-        },
-        {
-          name: 'Планка',
-          leadTime: '02:30',
-        },
-      ],
-    ],
-  },
-];
+const goals = { loseWeight: 'Похудение', gainWeight: 'Набор веса' };
+const groups = { legs: 'Ноги', arms: 'Руки' };
 
 function App() {
   const [goal, setGoal] = useState();
@@ -56,7 +30,6 @@ function App() {
         if (s.lapsCount > 1) {
           const lap = [];
           for (let i = 1; i < s.lapsCount; i++) {
-            console.log(s.extendedLaps[i - 1], i);
             exercises.push(
               s.extendedLaps[i - 1].values.map((v, j) => ({
                 values: { ...v },
@@ -79,28 +52,28 @@ function App() {
     })();
   }, []);
 
-  const goalItems = ['Похудение', 'Набор веса'].map((n, i) => ({
-    key: n,
+  const goalItems = Object.keys(goals).map((k) => ({
+    key: k,
     label: (
       <span
         onClick={() => {
-          setGoal(n);
+          setTemplateField({ ...template, target: k });
         }}
       >
-        {n}
+        {goals[k]}
       </span>
     ),
   }));
 
-  const groupItems = ['Ноги', 'Руки'].map((n, i) => ({
-    key: n,
+  const groupItems = Object.keys(groups).map((k) => ({
+    key: k,
     label: (
       <span
         onClick={() => {
-          setGroup(n);
+          setTemplateField({ ...template, group: k });
         }}
       >
-        {n}
+        {groups[k]}
       </span>
     ),
   }));
@@ -165,7 +138,6 @@ function App() {
       if (e.parameters.includes('repsCount')) newExercise.values.repsCount = 1;
       if (e.parameters.includes('leadTime')) newExercise.values.leadTime = 150;
       const i = selectedSet;
-      console.log(i, newSets, e, newExercise);
       if (editedExercise !== undefined) {
         newSets[i].exercises.forEach((t, j) => {
           newSets[i].exercises[j][editedExercise] = newExercise;
@@ -205,6 +177,11 @@ function App() {
     [sets],
   );
 
+  const setTemplateField = (newTemplate) => {
+    setTemplate(newTemplate);
+    saveTrainingTemplate(sets, trainId, newTemplate);
+  };
+
   const setRepsCount = useCallback(
     (i, c) => {
       const newSets = sets.slice(0);
@@ -228,11 +205,22 @@ function App() {
   return (
     <>
       <div className="container">
-        <div className="title">новая тренировка</div>
+        <div
+          onClick={() => {
+            CreateTemplate(trainId);
+          }}
+          className="title"
+        >
+          новая тренировка
+        </div>
         <div>
           <input
             className="title_input"
             placeholder="Введите название тренировки"
+            value={template?.title}
+            onChange={(e) =>
+              setTemplateField({ ...template, title: e.target.value })
+            }
           />
         </div>
         <div className="top_selectors">
@@ -243,7 +231,9 @@ function App() {
                 items: goalItems,
               }}
             >
-              <a onClick={(e) => e.preventDefault()}>{goal || 'Выбрать'}</a>
+              <a onClick={(e) => e.preventDefault()}>
+                {goals[template?.target] || 'Выбрать'}
+              </a>
             </Dropdown>
           </div>
           <div className="group">
@@ -253,7 +243,9 @@ function App() {
                 items: groupItems,
               }}
             >
-              <a onClick={(e) => e.preventDefault()}>{group || 'Выбрать'}</a>
+              <a onClick={(e) => e.preventDefault()}>
+                {groups[template?.group] || 'Выбрать'}
+              </a>
             </Dropdown>
           </div>
         </div>

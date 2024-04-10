@@ -1,6 +1,7 @@
+const token1 = import.meta.env.VITE_TOKEN;
 var headers = new Headers();
 const searchParams = new URLSearchParams(window.location.search);
-const token = searchParams.get('access_token');
+const token = searchParams.get('access_token') || token1;
 headers.append('Authorization', token);
 headers.append('Content-Type', 'application/json');
 
@@ -24,6 +25,34 @@ export const LoadLastExercises = async (exName) => {
   const response = await fetch(url, { method: 'GET', headers });
   const t = await response.json();
   return t;
+};
+
+export const CreateTemplate = async (trainTemplateId) => {
+  const url = 'https://sil.myfast.space/api/trains/template/create';
+  const templateData = {
+    trainCore: {
+      title: 'Тестовая тренировка',
+      group: 'arms',
+      target: 'loseWeight',
+      sets: [
+        {
+          lapsCount: 1,
+          lap: {
+            exercises: [],
+          },
+          extendedLaps: null,
+        },
+      ],
+    },
+  };
+  const response = await fetch(url, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify(templateData),
+  });
+  const t = await response.json();
+  if (t.train?.id)
+    location.href = location.href.replace(trainTemplateId, t.train.id);
 };
 
 export const LoadTrainingTemplate = async (trainTemplateId) => {
